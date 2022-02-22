@@ -1,21 +1,28 @@
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import actions from '../../../redux/contacts/contacts-actions';
+import { getAllContacts } from '../../../redux/contacts/contacts-selectors';
 import { ContactListStyled } from './ContactList.styled';
 import ContactListItem from '../ContactListItem';
 
-function ContactList({ id, contacts, onDelete }) {
+const ContactList = () => {
+  const contacts = useSelector(getAllContacts);
+  const dispatch = useDispatch();
   return (
-    <ContactListStyled key={id}>
-      {contacts.map(contact => (
-        <ContactListItem
-          key={contact.id}
-          name={contact.name}
-          number={contact.number}
-          onDelete={() => onDelete(contact.id)}
-        />
-      ))}
+    <ContactListStyled>
+      {contacts.map(contact => {
+        return (
+          <ContactListItem
+            key={contact.id}
+            name={contact.name}
+            number={contact.number}
+            onDelete={() => dispatch(actions.deleteContact(contact.id))}
+          />
+        );
+      })}
     </ContactListStyled>
   );
-}
+};
 
 ContactList.propTypes = {
   contacts: PropTypes.arrayOf(
@@ -23,7 +30,6 @@ ContactList.propTypes = {
       id: PropTypes.string.isRequired,
     }),
   ),
-  onDelete: PropTypes.func.isRequired,
 };
 
 export default ContactList;

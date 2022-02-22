@@ -1,60 +1,37 @@
-import { useState } from 'react';
-import { nanoid } from 'nanoid';
+import { useSelector, useDispatch } from 'react-redux';
 import './App.css';
-import useLocalStorage from './hooks/useLocalStorage';
 import Container from './components/Container';
 import { PhonebookTitle, ContactTitle } from './components/Title/Title.styled';
 import Form from './components/Form';
 import ContactsList from './components/Contacts/ContactList';
 import Filter from './components/Filter';
+import actions from './redux/contacts/contacts-actions';
+import { getContact } from './redux/contacts/contacts-selectors';
 
 export default function App() {
-  const [contacts, setContacts] = useLocalStorage('contacts', [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ]);
-  const [filter, setFilter] = useState('');
+  const contacts = useSelector(getContact);
+  const dispatch = useDispatch();
 
-  const addContact = ({ name, number }) => {
-    const newContact = {
-      id: nanoid(),
-      name: name,
-      number: number,
-    };
+  const handleSubmit = ({ name, number }) => {
     if (
       contacts.find(
         contact =>
-          contact.name.toLocaleLowerCase() === newContact.name.toLocaleLowerCase() ||
-          contact.number === newContact.number,
+          contact.name.toLocaleLowerCase() === name.toLocaleLowerCase() ||
+          contact.number === number,
       )
     ) {
-      return alert(`${newContact.name} is added`);
+      return alert(`${name} is added`);
     }
-    setContacts(prevState => [...prevState, newContact]);
-  };
-
-  const onFilter = evt => {
-    setFilter(evt.target.value);
-  };
-
-  const filterChange = () => {
-    const filterNormalized = filter.toLocaleLowerCase();
-    return contacts.filter(contact => contact.name.toLocaleLowerCase().includes(filterNormalized));
-  };
-
-  const deleteContact = id => {
-    setContacts(prevState => prevState.filter(contact => contact.id !== id));
+    dispatch(actions.addContact(name, number));
   };
 
   return (
     <Container>
       <PhonebookTitle>Phonebook</PhonebookTitle>
-      <Form onSubmit={addContact} />
+      <Form onSubmit={handleSubmit} />
       <ContactTitle>Contacts</ContactTitle>
-      <Filter value={filter} onChange={onFilter}></Filter>
-      <ContactsList contacts={filterChange()} onDelete={deleteContact}></ContactsList>
+      <Filter></Filter>
+      <ContactsList></ContactsList>
     </Container>
   );
 }

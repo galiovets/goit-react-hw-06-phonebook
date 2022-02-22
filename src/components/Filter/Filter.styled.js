@@ -8,7 +8,7 @@ export const FilterLabel = styled.label`
 `;
 
 export const FilterInput = styled.input`
-font-size: 15px;
+  font-size: 15px;
   display: block;
   width: 100%;
   height: 40px;
@@ -23,9 +23,8 @@ font-size: 15px;
   border-radius: 10px;
   box-shadow: 8px 8px 19px 0px rgba(34, 60, 80, 0.12);
   outline: none;
-    &:hover,
-    &:focus {
-        outline: 1px solid rgba(129, 4, 123, 0.12);
-    }
+  &:hover,
+  &:focus {
+    outline: 1px solid rgba(129, 4, 123, 0.12);
   }
 `;
