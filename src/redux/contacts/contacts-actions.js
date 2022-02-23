@@ -3,9 +3,11 @@ import { nanoid } from 'nanoid';
 
 const addContact = createAction('contact/addContact', ({ name, number }) => {
   return {
-    id: nanoid(),
-    name: name,
-    number: number,
+    payload: {
+      id: nanoid(),
+      name: name,
+      number: number,
+    },
   };
 });
 

@@ -1,10 +1,32 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 import { FormStyled, FormInput, FormLabel, AddButton } from './Form.styled';
+import actions from '../../redux/contacts/contacts-actions';
+import { getContact } from '../../redux/contacts/contacts-selectors';
 
-export default function Form({ onSubmit }) {
+export default function Form() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+  const contacts = useSelector(getContact);
+  const dispatch = useDispatch();
+
+  const handleSubmit = evt => {
+    evt.preventDefault();
+
+    if (
+      contacts.find(
+        contact =>
+          contact.name.toLocaleLowerCase() === name.toLocaleLowerCase() ||
+          contact.number === number,
+      )
+    ) {
+      return alert(`${name} is added`);
+    }
+    dispatch(actions.addContact({ name, number }));
+
+    reset();
+  };
 
   const handleChange = evt => {
     const { name, value } = evt.target;
@@ -21,12 +43,6 @@ export default function Form({ onSubmit }) {
       default:
         return;
     }
-  };
-
-  const handleSubmit = evt => {
-    evt.preventDefault();
-    onSubmit({ name, number });
-    reset();
   };
 
   const reset = () => {
@@ -66,7 +82,3 @@ export default function Form({ onSubmit }) {
     </FormStyled>
   );
 }
-
-Form.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
